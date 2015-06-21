@@ -1,0 +1,40 @@
+     0 Sun Apr 19 17:18:34 PDT 2015 META-INF/
+   126 Sun Apr 19 17:18:32 PDT 2015 META-INF/MANIFEST.MF
+     0 Sun Apr 19 17:18:34 PDT 2015 WEB-INF/
+     0 Sun Apr 19 17:18:34 PDT 2015 WEB-INF/lib/
+     0 Sun Apr 19 17:18:34 PDT 2015 WEB-INF/classes/
+     0 Sun Apr 19 17:18:34 PDT 2015 WEB-INF/classes/com/
+     0 Sun Apr 19 17:18:34 PDT 2015 WEB-INF/classes/com/escala/
+     0 Sun Apr 19 17:18:34 PDT 2015 WEB-INF/classes/com/escala/apis/
+     0 Sun Apr 19 17:18:34 PDT 2015 WEB-INF/classes/com/escala/apis/resources/
+     0 Sun Apr 19 17:18:34 PDT 2015 WEB-INF/classes/com/escala/apis/dao/
+   378 Sun Apr 06 02:44:50 PDT 2014 create_log_config.html
+ 27075 Sun Apr 19 07:37:56 PDT 2015 WEB-INF/lib/jackson-xc-1.9.2.jar
+605774 Sun Apr 19 07:38:02 PDT 2015 WEB-INF/lib/jersey-server-1.17.1.jar
+765648 Sun Apr 19 07:37:56 PDT 2015 WEB-INF/lib/jackson-mapper-asl-1.9.2.jar
+467060 Sun Apr 19 07:37:56 PDT 2015 WEB-INF/lib/jersey-core-1.17.1.jar
+ 62983 Sun Apr 19 07:37:56 PDT 2015 WEB-INF/lib/activation-1.1.jar
+228286 Sun Apr 19 07:37:56 PDT 2015 WEB-INF/lib/jackson-core-asl-1.9.2.jar
+ 18323 Sun Apr 19 07:37:56 PDT 2015 WEB-INF/lib/jackson-jaxrs-1.9.2.jar
+ 67758 Sun Apr 19 07:37:56 PDT 2015 WEB-INF/lib/jettison-1.1.jar
+890168 Sun Apr 19 07:37:52 PDT 2015 WEB-INF/lib/jaxb-impl-2.2.3-1.jar
+105134 Sun Apr 19 07:37:54 PDT 2015 WEB-INF/lib/jaxb-api-2.2.2.jar
+125551 Sun Apr 19 07:38:02 PDT 2015 WEB-INF/lib/jersey-servlet-1.17.1.jar
+105112 Sun Apr 19 07:37:54 PDT 2015 WEB-INF/lib/servlet-api-2.5.jar
+163575 Sun Apr 19 07:37:56 PDT 2015 WEB-INF/lib/jersey-json-1.17.1.jar
+  8872 Sun Apr 19 17:18:30 PDT 2015 WEB-INF/lib/escala_xfer_objects-0.0.1-SNAPSHOT.jar
+ 23346 Sun Apr 19 07:37:56 PDT 2015 WEB-INF/lib/stax-api-1.0-2.jar
+ 43033 Sun Apr 19 07:38:02 PDT 2015 WEB-INF/lib/asm-3.1.jar
+  6612 Sun Apr 19 17:18:32 PDT 2015 WEB-INF/classes/com/escala/apis/resources/LogConfigsResource.class
+  5508 Sun Apr 19 17:18:32 PDT 2015 WEB-INF/classes/com/escala/apis/resources/LogEntriesResource.class
+  6573 Sun Apr 19 17:18:32 PDT 2015 WEB-INF/classes/com/escala/apis/dao/LogConfigDAO.class
+  1071 Sun Apr 19 17:18:32 PDT 2015 WEB-INF/classes/com/escala/apis/dao/DAOFactory.class
+   253 Sun Apr 19 17:18:32 PDT 2015 WEB-INF/classes/com/escala/apis/dao/IDAOFactory.class
+  3543 Sun Apr 19 17:18:32 PDT 2015 WEB-INF/classes/com/escala/apis/dao/LogEntryDAO.class
+   811 Sun Apr 19 17:18:32 PDT 2015 WEB-INF/classes/com/escala/apis/dao/ILogEntryDAO.class
+   891 Sun Apr 19 17:18:32 PDT 2015 WEB-INF/classes/com/escala/apis/dao/ILogConfigDAO.class
+     0 Sun Apr 19 17:18:34 PDT 2015 META-INF/maven/
+     0 Sun Apr 19 17:18:34 PDT 2015 META-INF/maven/escala_apis/
+     0 Sun Apr 19 17:18:34 PDT 2015 META-INF/maven/escala_apis/escala_apis/
+  2036 Sun Apr 06 02:44:50 PDT 2014 META-INF/maven/escala_apis/escala_apis/pom.xml
+   116 Sun Apr 19 17:18:34 PDT 2015 META-INF/maven/escala_apis/escala_apis/pom.properties

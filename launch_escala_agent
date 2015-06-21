@@ -1,0 +1,11 @@
+#java -XX:-OmitStackTraceInFastThrow -verbose:class -javaagent:"/Users/sawant/development/Eclipse Workspaces/escala_agent/Agent/build/jar/agentShell.jar"="LogConfigsResource" -jar start.jar jetty.port=9090
+
+#java -Xdebug -Xrunjdwp:transport=dt_socket,address=8585,server=y,suspend=n -javaagent:"/Users/sawant/development/Eclipse Workspaces/escala_agent/Agent/build/jar/agentShell.jar"="LogConfigsResource" -jar start.jar
+
+echo "This script must be run from the escala root directory."
+cd ./jetty-escala_agent-base
+
+java -XX:-OmitStackTraceInFastThrow -javaagent:"../escala_agent/Agent/build/jar/agentShell.jar"="LogConfigsResource" -jar ../jetty-distribution-9.2.10.v20150310/start.jar jetty.port=9090 https.port=9999
+
+#java -jar ../jetty-distribution-9.2.10.v20150310-copy/start.jar jetty.port=9090 https.port=9999
+

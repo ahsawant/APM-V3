@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Escala IT Solutions</title>
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style_configs.css">
+  <!-- Bootstrap stylesheets -->
+  <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+</head>
+<body>
+  <section id="escalaapp">
+  <script type="text/x-handlebars">
+    <div class="navbar">
+	  <div class="navbar-inner">
+		<a class="brand" href="#">Escala</a>
+		<ul class="nav">
+			<li>{{#link-to 'configs'}}Log Configuration{{/link-to}}</li>
+			<li>{{#link-to 'logs'}}Logs{{/link-to}}</li>
+		</ul>
+      </div>
+	</div>
+
+	{{outlet}}
+  </script>
+  
+  <script type="text/x-handlebars" id="configs">
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+		  {{partial 'config/update'}}
+		  <ul id="file-list">
+  			{{#each}}
+    			<li {{bind-attr class="isSelected:selected"}}>      				
+      				{{#link-to 'config' this}} 
+						<label>{{fileName}}</label>
+					{{/link-to}}
+					<button {{action "removeFile" this}} class="destroy"></button>
+    			</li>
+  			{{/each}}
+		  </ul>
+        </div>
+        <div class="span9">
+          {{outlet}}
+        </div>
+      </div>
+    </div>
+  </script>
+  
+  <script type="text/x-handlebars" id="config/update">	
+    <button {{action 'openFile'}}>Open File</button>
+	<button style="display:none" id="loadFile" {{action 'loadFile'}}>Load File Info</button>
+	<p><input type="file" id="fileSelector" value=newFile style="display:none" {{action "newFile" on="change"}}/></p>
+  </script>
+  
+  <script type="text/x-handlebars" id="config">
+	<div class="container-fluid">		
+	{{#each myclass in classes}}
+		<div class="row-fluid">
+		<p> {{myclass.className}} </p>
+			<div class="span7">
+				<ul id="method-list">
+  				{{#each method in myclass.methods}}
+    				<li {{bind-attr class="method.isSelected:selected"}}>      				
+      					<label>{{format-method method}}</label>
+						{{view App.ConfigCheckbox class="instrument" className=myclass.className method=method checked=method.isInstrumented}}
+    				</li>
+  				{{/each}}
+		  		</ul>
+			</div>
+		</div>
+	{{/each}}	 	
+	</div>
+  </script>
+  
+  <script type="text/x-handlebars" id="logs/update">
+	Search:  {{input type="text" value=searchQuery size="50"}}	
+    <p><button {{action 'search'}}>Submit</button></p>
+  </script>
+  
+  <script type="text/x-handlebars" id="logs">
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+		  {{partial 'logs/update'}}
+        </div>
+        <div class="span9">
+          <ul id="log-list">
+  			{{#each}}
+    			<li>      				
+      			  <label>{{format-markdown logData}}</label>
+    			</li>
+  			{{/each}}
+		  </ul>
+        </div>
+      </div>
+    </div>
+  </script>
+  
+  <script type="text/x-handlebars" id="posts">
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <table class='table'>
+            <thead>
+              <tr><th>Recent Posts</th></tr>
+            </thead>
+            {{#each}}
+            <tr><td>
+			  {{#link-to 'post' this}}
+                {{title}} <small class='muted'>by {{author.name}}</small>
+			  {{/link-to}}
+            </td></tr>
+            {{/each}}
+         </table>
+        </div>
+        <div class="span9">
+          {{outlet}}
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/x-handlebars" id="post">
+
+	{{#if isEditing}}
+	  {{partial 'post/edit'}}
+	  <button {{action 'doneEditing'}}>Done</button>
+	{{else}}
+	  <button {{action 'edit'}}>Edit</button>
+	{{/if}}
+
+    <h1>{{title}}</h1>
+    <h2>by {{author.name}} <small class='muted'>({{format-date date}})</small></h2>
+
+    <hr>
+
+    <div class='intro'>
+      {{format-markdown excerpt}}
+    </div>
+
+    <div class='below-the-fold'>
+      {{format-markdown body}}
+    </div>
+  </script>
+  
+  <script type="text/x-handlebars" id="post/edit">
+    <p>{{input type="text" value=title}}</p>
+    <p>{{input type="text" value=excerpt}}</p>
+    <p>{{textarea value=body}}</p>
+  </script>
+
+  <script src="js/libs/jquery-1.10.2.js"></script>
+  <script src="js/libs/handlebars-1.1.2.js"></script>
+  <script src="js/libs/ember-1.4.0.js"></script>
+  <script src="js/libs/ember-data.js"></script>
+  <!-- Convert markdown into HTML -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
+  <!-- Date formatting library -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
+  <script src="js/application.js"></script>
+  <script src="js/models/models.js"></script>
+  <script src="js/polling.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/controllers/configs_controller.js"></script>
+  <script src="js/controllers/config_controller.js"></script> 
+  <script src="js/controllers/logs_controller.js"></script> 
+  <script src="js/views/config_instrument_view.js"></script>
+  <!-- to activate the test runner, add the "?test" query string parameter -->
+  <script src="tests/runner.js"></script>
+  </section>
+</body>
+</html>
+<!--{{input type="checkbox" class="instrument" name="isInstrumented" checked=method.isInstrumented}}-->

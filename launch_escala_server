@@ -1,0 +1,4 @@
+cd ./jetty-escala_server-base
+#java -jar ../jetty-distribution-9.2.10.v20150310/start.jar jetty.port=8080 https.port=8443
+java -jar ../jetty-distribution-9.2.10.v20150310/start.jar
+
