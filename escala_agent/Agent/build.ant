@@ -1,0 +1,66 @@
+<project>
+
+	<property name="coreagent.classpath" value="
+		build/shell_agent_classes;
+		lib/asm-5.0_ALPHA.jar;
+		lib/jersey-client-1.18.jar;
+		lib/jersey-core-1.18.jar;
+		lib/escala_xfer_objects-0.0.1-SNAPSHOT.jar;
+		lib/log4j-api-2.0-rc1.jar;
+		lib/log4j-core-2.0-rc1.jar;
+		log4j.properties" />
+
+	<!--
+	The line above is where I stopped!!! I added the log4j.properties line and the "resources"
+	folder contents (see further below). This did NOT do the trick.
+	-->
+
+	<target name="clean">
+		<delete dir="build" />
+	</target>
+
+	<target name="compile-shell-agent" depends="clean">
+		<mkdir dir="build/shell_agent_classes" />
+		<javac debug="on" debuglevel="lines,vars,source" srcdir="system_src" classpath="" destdir="build/shell_agent_classes" />
+	</target>
+
+	<target name="compile-core-agent" depends="compile-shell-agent">
+		<mkdir dir="build/core_agent_classes" />
+		<javac debug="on" debuglevel="lines,vars,source" srcdir="src" classpath="${coreagent.classpath}" destdir="build/core_agent_classes" />
+	</target>
+
+	<target name="build-core-agentjar" depends="compile-core-agent">
+		<mkdir dir="build/jar" />
+		<jar destfile="build/jar/agent.jar" basedir="build/core_agent_classes" filesetmanifest="merge">
+			<manifest>
+				<attribute name="Premain-Class" value="com.escala.agent.boot.CoreAgent" />
+				<attribute name="Can-Retransform-Classes" value="true" />
+			</manifest>
+			<zipfileset includes="**/*.class" src="lib/asm-5.0_ALPHA.jar" />
+			<zipfileset includes="**/*.class" src="lib/jersey-client-1.18.jar" />
+			<zipfileset includes="**/*.class" src="lib/jersey-core-1.18.jar" />
+			<!-- Line below: // http://jersey.576304.n2.nabble.com/Client-Help-td5156690.html -->
+			<zipfileset includes="**/services/**" src="lib/jersey-core-1.18.jar" />
+			<zipfileset includes="**/*.class" src="lib/escala_xfer_objects-0.0.1-SNAPSHOT.jar" />
+			<zipfileset includes="**/*.class" src="lib/log4j-api-2.0-rc1.jar" />
+			<zipfileset includes="**/*.class" src="lib/log4j-core-2.0-rc1.jar" />
+			<zipfileset includes="**/*.class" src="lib/jersey-json-1.17.1.jar" />
+			<fileset dir="resources" />
+		</jar>
+	</target>
+
+	<target name="build-shell-agentjar" depends="build-core-agentjar">
+		<!-- As we're using the same dir as target and base, we need to remove the old file (or we'll attemt to recursively insert it) -->
+		<delete file="build/jar/agentShell.jar" />
+		<jar destfile="build/jar/agentShell.jar" basedir="build/shell_agent_classes" filesetmanifest="merge">
+			<manifest>
+				<attribute name="Premain-Class" value="com.escala.agent.boot.AgentShell" />
+				<attribute name="Can-Retransform-Classes" value="true" />
+			</manifest>
+			<fileset dir="build/jar">
+				<filename name="**/agent.jar" />
+			</fileset>
+		</jar>
+	</target>
+
+</project>
