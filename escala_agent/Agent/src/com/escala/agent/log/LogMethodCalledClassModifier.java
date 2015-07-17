@@ -33,6 +33,7 @@ public class LogMethodCalledClassModifier extends ClassVisitor {
 			return (super
 					.visitMethod(access, name, desc, signature, exceptions));
 
+		// Instrument Method
 		Type[] argumentTypes = Type.getArgumentTypes(desc);
 		logArgumentTypes(argumentTypes);
 		boolean staticMethod = (Opcodes.ACC_STATIC & access) != 0;

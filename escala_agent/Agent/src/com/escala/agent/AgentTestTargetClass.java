@@ -6,12 +6,12 @@ public class AgentTestTargetClass {
 	}
 
 	public static void fooLong(long l) {
-//		System.out.println("Long value: " + l);
+		System.out.println("Long value (static println call): " + l);
 
 	}
 
 	public static void fooDouble(double d) {
-//		System.out.println("Double value: " + d);
+		System.out.println("Double value (static println call): " + d);
 
 	}
 

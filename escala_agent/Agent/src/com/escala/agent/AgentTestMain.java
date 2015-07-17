@@ -10,7 +10,7 @@ public class AgentTestMain {
 			AgentTestTargetClass.foo(i, i, (float) (i * 1.1), i * 1.1, "str_"
 					+ i);
 		}
-
+		
 		System.out.println("Sleeping to wait for retransform.");
 		Thread.sleep(30000);
 		System.out.println("Done waiting for retransform.");

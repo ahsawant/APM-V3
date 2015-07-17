@@ -8,12 +8,15 @@ Creating WAR file
 The Jetty server serving the client application can be run by running the "launch" script in the folder below:
 /Users/sawant/development/jetty-distribution-9.1.3.v20140225
 
-Start the agent only after server is running. Note that the config URL (see below) must be hit first and fast so that the agent catches the udpated config before the test code runs through
+
+OLD-COMMENT: Start the agent only after server is running. Note that the config URL (see below) must be hit first and fast so that the agent catches the udpated config before the test code runs through
 
 URLs to hit:
 - http://localhost:8080/escala/create_log_config.html
+  - Values to fill: com.acme.HelloWorld    /   doGet
   - Values to fill: AgentTestTargetClass   /   fooLong
 
+- http://localhost:8080/test/hello/
 - http://localhost:8080/escala/apis/logentries
 
 

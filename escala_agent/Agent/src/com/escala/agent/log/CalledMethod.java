@@ -26,6 +26,7 @@ public class CalledMethod implements ICalledMethod {
 
 	public static void statCalledMethod(Object targetObject, String methodName,
 			Object[] args) {
+		System.err.println("Instrumented code called.********************************************************");
 		if (cMethod != null)
 			cMethod.calledMethod(targetObject, methodName, args);
 	}
@@ -42,6 +43,8 @@ public class CalledMethod implements ICalledMethod {
 	public void calledMethod(Object targetObject, String methodName,
 			Object[] args) {
 		LogEntry logEntry = null;
+		System.err.println("Instrumented code called.********************************************************");
+
 
 		// String baseLogStatement = CalledMethodProxy.getDebugString(
 		// targetObject, methodName, args);
@@ -49,6 +52,8 @@ public class CalledMethod implements ICalledMethod {
 		LogEntries entries = new LogEntries();
 		logEntry = new LogEntry(getOutput(targetObject, methodName, args));
 		entries.getLogEntries().add(logEntry);
+		
+		System.err.println("Method called *****************************************************************");
 
 		ClientResponse response = service.path("logentries")
 				.accept(MediaType.APPLICATION_JSON)

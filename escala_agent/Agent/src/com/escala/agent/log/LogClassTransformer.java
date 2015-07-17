@@ -42,6 +42,16 @@ public class LogClassTransformer implements ClassFileTransformer {
 
 			if (logger.isDebugEnabled())
 				logger.debug("Transforming: " + className);
+			
+			// Unclear why null classNames go by
+			if (className == null)
+			{
+				System.err
+						.println("className is NULL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				logger.info("Not transforming class as name is null!");
+				return(classfileBuffer);
+			}
+			
 			trackClassLoaders(loader, className);
 
 			// Only transform classes specified
@@ -68,6 +78,13 @@ public class LogClassTransformer implements ClassFileTransformer {
 		} catch (Throwable t) {
 			logger.error(t);
 		}
+
+		// Write original class
+		// writeClass(className + ".orig", classfileBuffer);
+
+		// Write new class
+		// writeClass(className + ".new" , byteArray);
+
 		return (byteArray);
 	}
 
@@ -75,6 +92,16 @@ public class LogClassTransformer implements ClassFileTransformer {
 		synchronized (classLoaders) {
 			if (logger.isDebugEnabled())
 				logger.debug("Found class " + className);
+			
+			if (loader == null) {
+				// Using the system class loader as "proxy" in the hopes the
+				// delegation to load later on will yield this class (theory to
+				// be tested). And yes, theoritically a class could be defined
+				// by both, but I don't think that happens in practice
+				loader = ClassLoader.getSystemClassLoader();
+			}
+			
+
 			Set<ClassLoader> loaders = classLoaders.get(className);
 			if (loaders == null) {
 				loaders = new HashSet<ClassLoader>();
@@ -87,8 +114,13 @@ public class LogClassTransformer implements ClassFileTransformer {
 	// Write out class for debugging purpose (will fail in Windows)
 	void writeClass(String className, byte[] byteArray) {
 		try {
-			new FileOutputStream(new File("/tmp/" + className + ".class"))
-					.write(byteArray);
+			File targetFile = new File("/tmp/" + className + ".class");
+			File parent = targetFile.getParentFile();
+			if (!parent.exists() && !parent.mkdirs()) {
+				throw new IllegalStateException("Couldn't create dir: "
+						+ parent);
+			}
+			new FileOutputStream(targetFile).write(byteArray);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
