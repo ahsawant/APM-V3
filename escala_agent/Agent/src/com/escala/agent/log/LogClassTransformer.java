@@ -46,8 +46,6 @@ public class LogClassTransformer implements ClassFileTransformer {
 			// Unclear why null classNames go by
 			if (className == null)
 			{
-				System.err
-						.println("className is NULL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				logger.info("Not transforming class as name is null!");
 				return(classfileBuffer);
 			}

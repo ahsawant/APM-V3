@@ -35,13 +35,6 @@ public class CoreAgent {
 	// Used w/ command line
 	public static void premain(String agentArgs, Instrumentation inst) {
 
-		ClassLoader classLoader = CoreAgent.class.getClassLoader();
-		if (classLoader != null)
-			System.err.println("CoreAgent classloader: "
-					+ classLoader.getResource("log4j.properties"));
-		else
-			System.err.println("CoreAgent classloader is NULL!");
-
 		CalledMethodProxy.setListener(new CalledMethodHandler());
 
 		List<String> args = parseArguments(agentArgs);

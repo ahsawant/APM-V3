@@ -6,14 +6,8 @@
 		lib/jersey-client-1.18.jar;
 		lib/jersey-core-1.18.jar;
 		lib/escala_xfer_objects-0.0.1-SNAPSHOT.jar;
-		lib/log4j-api-2.0-rc1.jar;
-		lib/log4j-core-2.0-rc1.jar;
-		log4j.properties" />
-
-	<!--
-	The line above is where I stopped!!! I added the log4j.properties line and the "resources"
-	folder contents (see further below). This did NOT do the trick.
-	-->
+		lib/log4j-core-2.3.jar;
+		lib/log4j-api-2.3.jar" />
 
 	<target name="clean">
 		<delete dir="build" />
@@ -42,8 +36,8 @@
 			<!-- Line below: // http://jersey.576304.n2.nabble.com/Client-Help-td5156690.html -->
 			<zipfileset includes="**/services/**" src="lib/jersey-core-1.18.jar" />
 			<zipfileset includes="**/*.class" src="lib/escala_xfer_objects-0.0.1-SNAPSHOT.jar" />
-			<zipfileset includes="**/*.class" src="lib/log4j-api-2.0-rc1.jar" />
-			<zipfileset includes="**/*.class" src="lib/log4j-core-2.0-rc1.jar" />
+			<zipfileset includes="**/*" src="lib/log4j-api-2.3.jar" />
+			<zipfileset includes="**/*" src="lib/log4j-core-2.3.jar" />
 			<zipfileset includes="**/*.class" src="lib/jersey-json-1.17.1.jar" />
 			<fileset dir="resources" />
 		</jar>
