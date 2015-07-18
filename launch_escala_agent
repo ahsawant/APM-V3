@@ -5,7 +5,7 @@
 echo "This script must be run from the escala root directory."
 cd ./jetty-escala_agent-base
 
-java -XX:-OmitStackTraceInFastThrow -javaagent:"../escala_agent/Agent/build/jar/agentShell.jar"="LogConfigsResource" -jar ../jetty-distribution-9.2.10.v20150310/start.jar jetty.port=9090 https.port=9999
+java -XX:-OmitStackTraceInFastThrow -javaagent:"../escala_agent/Agent/build/jar/agentShell.jar"="LogConfigsResource" -Dlog4j.debug -jar ../jetty-distribution-9.2.10.v20150310/start.jar jetty.port=9090 https.port=9999
 
 #java -jar ../jetty-distribution-9.2.10.v20150310-copy/start.jar jetty.port=9090 https.port=9999
 
