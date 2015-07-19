@@ -40,7 +40,7 @@ public class AgentShell {
 		URL agentURL = ClassLoader.getSystemResource(AGENT_BINARY);
 		// The loader is NOT closed on purpose (it's unclear when all
 		// classes will have been loaded, so we "leak" this one
-		System.out.println("URL: " + agentURL.toString());
+		System.out.println("Shell Agent URL: " + agentURL.toString());
 		try {
 
 			// Just need something to syncrhonize on (can't be loader as it's
@@ -58,8 +58,10 @@ public class AgentShell {
 							StandardCopyOption.REPLACE_EXISTING);
 					inStream.close();
 
-					// TODO: Not quite sure when a loader is closed (ignoring
-					// for now)
+					System.out.println("Core Agent uncompressed to: "
+							+ agentJar.getAbsolutePath());
+
+					// TODO: Not sure when a loader is closed (ignoring for now)
 					loader = new URLClassLoader(new URL[] { agentJar.toURI()
 							.toURL() }, AgentShell.class.getClassLoader());
 				}
@@ -68,7 +70,7 @@ public class AgentShell {
 			Class<?> claz = loader.loadClass(CORE_AGENT);
 			Method method = claz.getMethod(methodName, new Class[] {
 					String.class, Instrumentation.class });
-			System.out.println("Passing control to actual agent");
+			System.out.println("Passing control to Core Agent!s");
 			method.invoke(null, agentArgs, inst);
 
 		} catch (ClassNotFoundException e) {
