@@ -35,7 +35,7 @@ public class LogConfigsResource {
 	UriInfo uriInfo;
 	@Context
 	Request request;
-	
+
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public LogConfigs getAllInstances() {
@@ -43,10 +43,10 @@ public class LogConfigsResource {
 		ILogConfigDAO logConfigDAO = DAOFactory.getInstance().getLogConfigDAO();
 		if (logConfigDAO != null) {
 			result = new LogConfigs(logConfigDAO.getAll());
-		}		
+		}
 		return result;
 	}
-	
+
 	@GET
 	@Path("modified")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -56,10 +56,10 @@ public class LogConfigsResource {
 		if (logConfigDAO != null) {
 			result = new LogConfigs(logConfigDAO.getModified(clear));
 		}
-		
+
 		return result;
 	}
-	
+
 	@GET
 	@Path("{classInfo}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -67,18 +67,19 @@ public class LogConfigsResource {
 		LogConfigs result = null;
 		boolean validClassInfo = classInfo != null && classInfo != "";
 		ILogConfigDAO logConfigDAO = DAOFactory.getInstance().getLogConfigDAO();
-		
+
 		if (validClassInfo) {
-			result = new LogConfigs(logConfigDAO.getAllForClass(classInfo));	
+			result = new LogConfigs(logConfigDAO.getAllForClass(classInfo));
 		}
-		
+
 		return result;
 	}
-	
+
 	@GET
 	@Path("{classInfo}/{methodInfo}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public LogConfigs getClassMethodInstance(@PathParam("classInfo") String classInfo,
+	public LogConfigs getClassMethodInstance(
+			@PathParam("classInfo") String classInfo,
 			@PathParam("methodInfo") String methodInfo) {
 		LogConfigs result = null;
 		List<LogConfig> entries = null;
@@ -109,19 +110,22 @@ public class LogConfigsResource {
 		boolean validClassInfo = classInfo != null && classInfo != "";
 		boolean validMethodInfo = methodInfo != null && methodInfo != "";
 		ILogConfigDAO logConfigDAO = DAOFactory.getInstance().getLogConfigDAO();
-		
-		if (validClassInfo && validMethodInfo) {			
-			result = (LogConfig) logConfigDAO.getLogConfig(classInfo, methodInfo);
+
+		if (validClassInfo && validMethodInfo) {
+			result = (LogConfig) logConfigDAO.getLogConfig(classInfo,
+					methodInfo);
 			if (result != null) {
-				System.out.println("Found an entry for class " + classInfo + " and method " + methodInfo);
+				System.out.println("Found an entry for class " + classInfo
+						+ " and method " + methodInfo);
 			} else {
-				System.out.println("Did not find an entry for class " + classInfo + " and method " + methodInfo);
+				System.out.println("Did not find an entry for class "
+						+ classInfo + " and method " + methodInfo);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	@GET
 	@Path("count")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -132,27 +136,31 @@ public class LogConfigsResource {
 		count = logConfigDAO.getCount();
 		return String.valueOf(count);
 	}
-	
-	
+
 	@POST
 	@Produces(MediaType.TEXT_HTML)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public void newLogConfig(@FormParam("classInfo") String classInfo,
 			@FormParam("methodInfo") String methodInfo,
+			@FormParam("handlerClass") String handlerClass,
 			@Context HttpServletResponse servletResponse) throws IOException {
 
-		System.out.println("LogEntriesResource::newLogConfig");
+		System.out.println("LogEntriesResource::newLogConfig[POST]");
+		System.out.println("Arguments: " + handlerClass);
 		ILogConfigDAO logConfigDAO = DAOFactory.getInstance().getLogConfigDAO();
-		boolean result = logConfigDAO.addLogConfig(classInfo, methodInfo);
+		boolean result = logConfigDAO.addLogConfig(classInfo, methodInfo,
+				handlerClass);
 		if (result) {
-			System.out.println("Added new entry for class " + classInfo + " and method " + methodInfo);
+			System.out.println("Added new entry for class " + classInfo
+					+ " and method " + methodInfo + " with a classHandler.");
 		} else {
-			System.out.println("FAILED to add new entry for class " + classInfo + " and method " + methodInfo);
+			System.out.println("FAILED to add new entry for class " + classInfo
+					+ " and method " + methodInfo + " with a classHandler.");
 		}
 
 		servletResponse.sendRedirect("../apis/logconfigs");
 	}
-	
+
 	@PUT
 	@Path("{classInfo}/{methodInfo}")
 	public Response newLogConfig(@PathParam("classInfo") String classInfo,
@@ -161,39 +169,41 @@ public class LogConfigsResource {
 		ILogConfigDAO logConfigDAO = DAOFactory.getInstance().getLogConfigDAO();
 		ILogConfig logConfig = new LogConfig(classInfo, methodInfo);
 		Response result = null;
-		
+
 		if (logConfigDAO.addLogConfig(logConfig)) {
-			System.out.println("Added new entry for class " + logConfig.getClassInfo() + 
-					" and method " + logConfig.getMethodInfo());
+			System.out.println("Added new entry for class "
+					+ logConfig.getClassInfo() + " and method "
+					+ logConfig.getMethodInfo() + " and a classHandler.");
 			result = Response.created(uriInfo.getAbsolutePath()).build();
-			
+
 		} else {
-			System.out.println("FAILED to add new entry for class " + logConfig.getClassInfo() + 
-					" and method " + logConfig.getMethodInfo());
+			System.out.println("FAILED to add new entry for class "
+					+ logConfig.getClassInfo() + " and method "
+					+ logConfig.getMethodInfo() + " and a classHandler.");
 			result = Response.notModified().build();
 		}
 		return result;
 	}
-	
-//	@PUT
-//	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-//	public Response newLogConfigs(JAXBElement<LogConfig> LogConfigParam) {
-//		System.out.println("LogConfigsResource::newLogConfigs[PUT]");
-//		ILogConfigDAO logConfigDAO = DAOFactory.getInstance().getLogConfigDAO();
-//		ILogConfig logConfig = LogConfigParam.getValue();
-//		Response result = null;
-//		
-//		if (logConfigDAO.addLogConfig(logConfig)) {
-//			System.out.println("Added new log config");
-//			result = Response.created(uriInfo.getAbsolutePath()).build();
-//			
-//		} else {
-//			System.out.println("FAILED to add new confif");
-//			result = Response.notModified().build();
-//		}
-//		return result;
-//	}
-	
+
+	// @PUT
+	// @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	// public Response newLogConfigs(JAXBElement<LogConfig> LogConfigParam) {
+	// System.out.println("LogConfigsResource::newLogConfigs[PUT]");
+	// ILogConfigDAO logConfigDAO = DAOFactory.getInstance().getLogConfigDAO();
+	// ILogConfig logConfig = LogConfigParam.getValue();
+	// Response result = null;
+	//
+	// if (logConfigDAO.addLogConfig(logConfig)) {
+	// System.out.println("Added new log config");
+	// result = Response.created(uriInfo.getAbsolutePath()).build();
+	//
+	// } else {
+	// System.out.println("FAILED to add new confif");
+	// result = Response.notModified().build();
+	// }
+	// return result;
+	// }
+
 	@DELETE
 	@Path("{classInfo}/{methodInfo}")
 	public Response deleteLogConfig(@PathParam("classInfo") String classInfo,
@@ -201,13 +211,13 @@ public class LogConfigsResource {
 		System.out.println("LogConfigsResource::deleteLogConfig");
 		Response result = null;
 		ILogConfigDAO logConfigDAO = DAOFactory.getInstance().getLogConfigDAO();
-				
+
 		if (logConfigDAO.removeLogConfig(classInfo, methodInfo)) {
 			result = Response.ok().build();
 		} else {
 			result = Response.notModified().build();
 		}
-		
+
 		return result;
 	}
 }

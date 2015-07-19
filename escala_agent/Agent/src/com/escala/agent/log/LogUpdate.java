@@ -45,7 +45,8 @@ public class LogUpdate {
 						logger.error("Found a new log entry for: "
 								+ entry.getClassInfo() + "::"
 								+ entry.getMethodInfo() + "; Status: "
-								+ entry.getStatus());
+								+ entry.getStatus() + "; classHandler:"
+								+ entry.getHandlerClass());
 				}
 			}
 		} catch (ClientHandlerException e) {

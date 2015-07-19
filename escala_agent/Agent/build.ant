@@ -1,11 +1,14 @@
 <project>
 
+	<!-- This is a bit hacky as it references the code outside of the project and relies on it's folder structure -->
+	<property name="escala_xfer_objects_library" value="../../escala_xfer_objects/target/escala_xfer_objects-0.0.1-SNAPSHOT.jar" />
+
 	<property name="coreagent.classpath" value="
 		build/shell_agent_classes;
 		lib/asm-5.0_ALPHA.jar;
 		lib/jersey-client-1.18.jar;
 		lib/jersey-core-1.18.jar;
-		lib/escala_xfer_objects-0.0.1-SNAPSHOT.jar;
+		${escala_xfer_objects_library};
 		lib/log4j-core-2.3.jar;
 		lib/log4j-api-2.3.jar" />
 
@@ -35,7 +38,7 @@
 			<zipfileset includes="**/*.class" src="lib/jersey-core-1.18.jar" />
 			<!-- Line below: // http://jersey.576304.n2.nabble.com/Client-Help-td5156690.html -->
 			<zipfileset includes="**/services/**" src="lib/jersey-core-1.18.jar" />
-			<zipfileset includes="**/*.class" src="lib/escala_xfer_objects-0.0.1-SNAPSHOT.jar" />
+			<zipfileset includes="**/*.class" src="${escala_xfer_objects_library}" />
 			<zipfileset includes="**/*" src="lib/log4j-api-2.3.jar" />
 			<zipfileset includes="**/*" src="lib/log4j-core-2.3.jar" />
 			<zipfileset includes="**/*.class" src="lib/jersey-json-1.17.1.jar" />

@@ -6,27 +6,43 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class LogConfig implements ILogConfig {
 	private String classInfo;
 	private String methodInfo;
+	private String handlerClass;
 	private int status;
-	
+
 	public LogConfig() {
-		this(null, null, ILogConfig.NEW);		
+		this(null, null, null, ILogConfig.NEW);
 	}
-	
+
 	public LogConfig(String classInfo, String methodInfo) {
-		this(classInfo, methodInfo, ILogConfig.NEW);
+		this(classInfo, methodInfo, null, ILogConfig.NEW);
 	}
-	
-	public LogConfig(String classInfo, String methodInfo, int status) {
+
+	public LogConfig(String className, String methodName, String handlerClass) {
+		this(className, methodName, handlerClass, ILogConfig.NEW);
+	}
+
+	public LogConfig(String classInfo, String methodInfo, String handlerClass,
+			int status) {
 		super();
 		this.classInfo = classInfo;
 		this.methodInfo = methodInfo;
+		this.handlerClass = handlerClass;
 		this.status = status;
 	}
-	
+
 	public LogConfig(ILogConfig logEntry) {
-		this(logEntry.getClassInfo(), logEntry.getMethodInfo(), logEntry.getStatus());
+		this(logEntry.getClassInfo(), logEntry.getMethodInfo(), logEntry
+				.getHandlerClass(), logEntry.getStatus());
 	}
-	
+
+	public String getHandlerClass() {
+		return handlerClass;
+	}
+
+	public void setHandlerClass(String handlerClass) {
+		this.handlerClass = handlerClass;
+	}
+
 	public String getClassInfo() {
 		return classInfo;
 	}
@@ -45,7 +61,7 @@ public class LogConfig implements ILogConfig {
 
 	@Override
 	public void setStatus(int status) {
-		this.status = status;		
+		this.status = status;
 	}
 
 	@Override
