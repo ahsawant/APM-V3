@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.escala.agent.compiler.Compiler;
 import com.escala.agent.log.ClassEntryWrapper.ModifiedClass;
 import com.escala.xfer.LogConfig;
 import com.escala.xfer.LogConfigs;
@@ -41,7 +42,8 @@ public class LogUpdate {
 			if (entries != null && entries.getLogConfigs() != null) {
 				for (LogConfig entry : entries.getLogConfigs()) {
 					if (classEntries.addIfNeeded(entry.getClassInfo(),
-							entry.getMethodInfo(), serial))
+							entry.getMethodInfo(), entry.getHandlerClass(),
+							serial))
 						logger.error("Found a new log entry for: "
 								+ entry.getClassInfo() + "::"
 								+ entry.getMethodInfo() + "; Status: "
@@ -63,7 +65,9 @@ public class LogUpdate {
 	public void doRestransform(Map<String, Set<ClassLoader>> loaders,
 			Short serial) {
 
-		// logger.error("Retransforming...");
+		logger.info("Retransforming...");
+
+		Set<ClassLoader> clazLoaders = null;
 
 		// Need to retransform changed classes
 		for (Iterator<ModifiedClass> iter = classEntries
@@ -72,8 +76,8 @@ public class LogUpdate {
 			try {
 				logger.error("Retransforming class: " + claz.getClassName());
 				synchronized (loaders) {
-					Set<ClassLoader> clazLoaders = loaders.get(claz
-							.getClassName().replace(".", "/"));
+					clazLoaders = loaders.get(claz.getClassName().replace(".",
+							"/"));
 					if (clazLoaders != null)
 						for (Iterator<ClassLoader> iterator = clazLoaders
 								.iterator(); iterator.hasNext();)
@@ -84,6 +88,7 @@ public class LogUpdate {
 						inst.retransformClasses(Class.forName(
 								claz.getClassName(), true,
 								ClassLoader.getSystemClassLoader()));
+
 				}
 				logger.error("Restransformed class " + claz.getClassName());
 			} catch (ClassNotFoundException e) {
@@ -91,7 +96,19 @@ public class LogUpdate {
 			} catch (UnmodifiableClassException e) {
 				logger.error("Class not retransformed!", e);
 			}
+			createClass(claz, clazLoaders);
 		}
+	}
+
+	private void createClass(ModifiedClass claz, Set<ClassLoader> clazLoaders) {
+		if (clazLoaders != null)
+			for (Iterator<ClassLoader> iterator = clazLoaders.iterator(); iterator
+					.hasNext();)
+				Compiler.compile("MyClass.java", claz.getHandlerClass(),
+						iterator.next());
+		else
+			Compiler.compile("MyClass.java", claz.getHandlerClass(),
+					ClassLoader.getSystemClassLoader());
 	}
 
 	public ClassEntries getClassEntries() {

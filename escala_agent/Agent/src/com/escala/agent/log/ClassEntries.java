@@ -22,13 +22,14 @@ public class ClassEntries {
 
 	int oldCount = classEntries.size();
 
-	public boolean addIfNeeded(String claz, String method, Short serial) {
+	public boolean addIfNeeded(String claz, String method, String handlerClass,
+			Short serial) {
 		ClassEntryWrapper classEntry = classEntries.get(claz);
 		if (classEntry == null)
 			classEntry = new ClassEntryWrapper(claz);
 
 		// This will always return true for a brand new classEntry
-		if (classEntry.addIfNeeded(method, serial)) {
+		if (classEntry.addIfNeeded(method, handlerClass, serial)) {
 			classEntries.put(claz, classEntry);
 			hasChanged = true;
 		}

@@ -12,6 +12,7 @@ final class ClassEntryWrapper {
 	private final String claz;
 	private boolean changed = true;
 	private final Map<String, Short> methodEntries = new HashMap<String, Short>();
+	private String handlerClass;
 
 	// Define a static logger
 	static final Logger logger = LogManager.getLogger(ClassEntryWrapper.class
@@ -25,17 +26,24 @@ final class ClassEntryWrapper {
 	 * 
 	 * @param method
 	 *            - Name of method
+	 * @param handlerClass
 	 * @param serial
 	 *            - Current serial number
 	 * @return - whether the method was added (true) or existed (false)
 	 */
-	public boolean addIfNeeded(String method, Short serial) {
+	public boolean addIfNeeded(String method, String handlerClass, Short serial) {
 		Short oldSerial = methodEntries.put(method, serial);
+		if (handlerClass != null)
+			this.handlerClass = handlerClass;
 		if (oldSerial == null) {
 			changed = true;
 			return (true);
 		}
 		return (false);
+	}
+
+	public Map<String, Short> getMethodEntries() {
+		return methodEntries;
 	}
 
 	/**
@@ -75,6 +83,10 @@ final class ClassEntryWrapper {
 
 		public boolean isMethodInstrumented(String methodName) {
 			return (methodEntries.containsKey(methodName));
+		}
+
+		public String getHandlerClass() {
+			return (handlerClass);
 		}
 	}
 }
