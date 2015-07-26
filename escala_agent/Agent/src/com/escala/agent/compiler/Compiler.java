@@ -1,7 +1,5 @@
 package com.escala.agent.compiler;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,27 +50,17 @@ public class Compiler {
 			String classSource, ClassLoader cl, Path tmpDir)
 			throws CompilationException {
 
-		File fileToCompile = null;
-		FileOutputStream fStream = null;
-		try {
-			fileToCompile = new File(tmpDir.toFile(), fullyQualifiedClassName);
-			fStream = new FileOutputStream(fileToCompile);
-			fStream.write(classSource.getBytes());
-			fStream.close();
-		} catch (IOException e) {
-			logger.debug(e);
-			throw new CompilationException(e);
-		} finally {
-			if (fStream != null)
-				try {
-					fStream.close();
-				} catch (IOException e) {
-					// Logged as error in case this is the first (and thus
-					// final) error
-					logger.error(e);
-					// Not going to throw for an error closing the stream
-				}
-		}
+		/*
+		 * File fileToCompile = null; FileOutputStream fStream = null; try {
+		 * fileToCompile = new File(tmpDir.toFile(), fullyQualifiedClassName);
+		 * fStream = new FileOutputStream(fileToCompile);
+		 * fStream.write(classSource.getBytes()); fStream.close(); } catch
+		 * (IOException e) { logger.debug(e); throw new CompilationException(e);
+		 * } finally { if (fStream != null) try { fStream.close(); } catch
+		 * (IOException e) { // Logged as error in case this is the first (and
+		 * thus // final) error logger.error(e); // Not going to throw for an
+		 * error closing the stream } }
+		 */
 
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
@@ -82,7 +70,7 @@ public class Compiler {
 				cl, standardJavaFileManager);
 
 		SourceCustomJavaFileObject customFileObj = new SourceCustomJavaFileObject(
-				fullyQualifiedClassName, fileToCompile.toURI(), classSource);
+				fullyQualifiedClassName, classSource);
 		Set<SourceCustomJavaFileObject> classes = new HashSet<SourceCustomJavaFileObject>();
 		classes.add(customFileObj);
 
