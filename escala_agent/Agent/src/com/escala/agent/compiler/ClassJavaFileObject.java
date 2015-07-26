@@ -11,80 +11,71 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.tools.JavaFileObject;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+class ClassJavaFileObject implements JavaFileObject {
+	private final String binaryName;
+	private final URI uri;
+	private final String name;
 
-class SourceCustomJavaFileObject implements JavaFileObject {
-
-	// Define a static logger
-	static final Logger logger = LogManager
-			.getLogger(SourceCustomJavaFileObject.class.getName());
-	private String classSource;
-	private String binaryName;
-
-	public SourceCustomJavaFileObject(String binaryName, String classSource) {
+	public ClassJavaFileObject(String binaryName, URI uri) {
+		this.uri = uri;
 		this.binaryName = binaryName;
-		this.classSource = classSource;
-	}
-
-	public Kind getKind() {
-		return (Kind.SOURCE);
-	}
-
-	@Override
-	public CharSequence getCharContent(boolean ignoreEncodingErrors)
-			throws IOException {
-		return classSource;
+		name = uri.getPath() == null ? uri.getSchemeSpecificPart() : uri
+				.getPath(); // for FS based URI the path is not null, for JAR
+							// URI the scheme specific part is not null
 	}
 
 	@Override
 	public URI toUri() {
-		throw new UnsupportedOperationException();
-
-	}
-
-	@Override
-	public String getName() {
-		return (binaryName);
+		return uri;
 	}
 
 	@Override
 	public InputStream openInputStream() throws IOException {
-		throw new UnsupportedOperationException();
-
+		return uri.toURL().openStream(); // easy way to handle any URI!
 	}
 
 	@Override
 	public OutputStream openOutputStream() throws IOException {
 		throw new UnsupportedOperationException();
+	}
 
+	@Override
+	public String getName() {
+		return name;
 	}
 
 	@Override
 	public Reader openReader(boolean ignoreEncodingErrors) throws IOException {
 		throw new UnsupportedOperationException();
+	}
 
+	public CharSequence getCharContent(boolean ignoreEncodingErrors)
+			throws IOException {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Writer openWriter() throws IOException {
 		throw new UnsupportedOperationException();
-
 	}
 
 	@Override
 	public long getLastModified() {
-		throw new UnsupportedOperationException();
-
+		return 0;
 	}
 
 	@Override
 	public boolean delete() {
 		throw new UnsupportedOperationException();
-
 	}
 
 	@Override
+	public Kind getKind() {
+		return (Kind.CLASS);
+	}
+
+	@Override
+	// copied from SImpleJavaFileManager
 	public boolean isNameCompatible(String simpleName, Kind kind) {
 		String baseName = simpleName + kind.extension;
 		return kind.equals(getKind())
@@ -95,12 +86,19 @@ class SourceCustomJavaFileObject implements JavaFileObject {
 	@Override
 	public NestingKind getNestingKind() {
 		throw new UnsupportedOperationException();
-
 	}
 
 	@Override
 	public Modifier getAccessLevel() {
 		throw new UnsupportedOperationException();
+	}
 
+	public String binaryName() {
+		return binaryName;
+	}
+
+	@Override
+	public String toString() {
+		return "CustomJavaFileObject{" + "uri=" + uri + '}';
 	}
 }

@@ -1,8 +1,5 @@
 package com.escala.agent.compiler;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,38 +26,8 @@ public class Compiler {
 	 * using the classloader cl to resolve dependencies during compile time. The
 	 * /tmp folder will be used as temporary storage on disk.
 	 */
-	public static void compile(String className, String classSource,
-			ClassLoader cl) throws CompilationException {
-		try {
-			compile(className, classSource, cl,
-					Files.createTempDirectory("compiler_"));
-		} catch (IOException e) {
-			logger.debug(e);
-			throw new CompilationException(e);
-		}
-	}
-
-	/*
-	 * Compiles the java class given by fullyQualifiedClassName, with source
-	 * classSource and using the classloader cl to resolve dependencies during
-	 * compile time. The folder name provided by temporaryFolder will be used as
-	 * temporary local storage on disk.
-	 */
 	public static void compile(String fullyQualifiedClassName,
-			String classSource, ClassLoader cl, Path tmpDir)
-			throws CompilationException {
-
-		/*
-		 * File fileToCompile = null; FileOutputStream fStream = null; try {
-		 * fileToCompile = new File(tmpDir.toFile(), fullyQualifiedClassName);
-		 * fStream = new FileOutputStream(fileToCompile);
-		 * fStream.write(classSource.getBytes()); fStream.close(); } catch
-		 * (IOException e) { logger.debug(e); throw new CompilationException(e);
-		 * } finally { if (fStream != null) try { fStream.close(); } catch
-		 * (IOException e) { // Logged as error in case this is the first (and
-		 * thus // final) error logger.error(e); // Not going to throw for an
-		 * error closing the stream } }
-		 */
+			String classSource, ClassLoader cl) throws CompilationException {
 
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
@@ -69,20 +36,19 @@ public class Compiler {
 		final JavaFileManager fileManager = new CustomClassloaderJavaFileManager(
 				cl, standardJavaFileManager);
 
-		SourceCustomJavaFileObject customFileObj = new SourceCustomJavaFileObject(
+		SourceJavaFileObject customFileObj = new SourceJavaFileObject(
 				fullyQualifiedClassName, classSource);
-		Set<SourceCustomJavaFileObject> classes = new HashSet<SourceCustomJavaFileObject>();
+		Set<SourceJavaFileObject> classes = new HashSet<SourceJavaFileObject>();
 		classes.add(customFileObj);
 
 		CompilationTask task = compiler.getTask(null, fileManager, null, null,
 				null, classes);
 		boolean result = task.call();
 
-		if (result) {
-			System.out.println("Compilation is successful");
-		} else {
-			System.out.println("Compilation Failed");
-		}
+		if (logger.isDebugEnabled())
+			logger.debug(new StringBuffer("Compilation of class ").append(
+					fullyQualifiedClassName).append(
+					result ? " succeeded" : " failed"));
 
 	}
 }

@@ -30,8 +30,8 @@ public class CustomClassloaderJavaFileManager implements JavaFileManager {
 
 	@Override
 	public String inferBinaryName(Location location, JavaFileObject file) {
-		if (file instanceof ClassCustomJavaFileObject) {
-			return ((ClassCustomJavaFileObject) file).binaryName();
+		if (file instanceof ClassJavaFileObject) {
+			return ((ClassJavaFileObject) file).binaryName();
 		} else { // if it's not CustomJavaFileObject, then it's coming from
 					// standard file manager - let it handle the file
 			return standardFileManager.inferBinaryName(location, file);
