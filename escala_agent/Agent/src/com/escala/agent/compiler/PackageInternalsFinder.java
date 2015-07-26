@@ -71,7 +71,7 @@ class PackageInternalsFinder {
 					binaryName = binaryName.replaceAll(CLASS_FILE_EXTENSION
 							+ "$", "");
 
-					result.add(new CustomJavaFileObject(binaryName, uri));
+					result.add(new ClassCustomJavaFileObject(binaryName, uri));
 				}
 			}
 		} catch (Exception e) {
@@ -93,7 +93,7 @@ class PackageInternalsFinder {
 					binaryName = binaryName.replaceAll(CLASS_FILE_EXTENSION
 							+ "$", "");
 
-					result.add(new CustomJavaFileObject(binaryName, childFile
+					result.add(new ClassCustomJavaFileObject(binaryName, childFile
 							.toURI()));
 				}
 			}

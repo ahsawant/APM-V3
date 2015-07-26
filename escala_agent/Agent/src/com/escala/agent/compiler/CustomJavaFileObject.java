@@ -11,7 +11,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.tools.JavaFileObject;
 
-class CustomJavaFileObject implements JavaFileObject {
+abstract class CustomJavaFileObject implements JavaFileObject {
 	private final String binaryName;
 	private final URI uri;
 	private final String name;
@@ -49,11 +49,8 @@ class CustomJavaFileObject implements JavaFileObject {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public CharSequence getCharContent(boolean ignoreEncodingErrors)
-			throws IOException {
-		throw new UnsupportedOperationException();
-	}
+	public abstract CharSequence getCharContent(boolean ignoreEncodingErrors)
+			throws IOException;
 
 	@Override
 	public Writer openWriter() throws IOException {
@@ -71,9 +68,7 @@ class CustomJavaFileObject implements JavaFileObject {
 	}
 
 	@Override
-	public Kind getKind() {
-		return Kind.CLASS;
-	}
+	public abstract Kind getKind();
 
 	@Override
 	// copied from SImpleJavaFileManager

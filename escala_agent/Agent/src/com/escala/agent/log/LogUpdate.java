@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.escala.agent.compiler.CompilationException;
 import com.escala.agent.compiler.Compiler;
 import com.escala.agent.log.ClassEntryWrapper.ModifiedClass;
 import com.escala.xfer.LogConfig;
@@ -96,19 +97,24 @@ public class LogUpdate {
 			} catch (UnmodifiableClassException e) {
 				logger.error("Class not retransformed!", e);
 			}
+			// Now create the new class associated with the retransformed class
 			createClass(claz, clazLoaders);
 		}
 	}
 
 	private void createClass(ModifiedClass claz, Set<ClassLoader> clazLoaders) {
-		if (clazLoaders != null)
-			for (Iterator<ClassLoader> iterator = clazLoaders.iterator(); iterator
-					.hasNext();)
+		try {
+			if (clazLoaders != null)
+				for (Iterator<ClassLoader> iterator = clazLoaders.iterator(); iterator
+						.hasNext();)
+					Compiler.compile("MyClass.java", claz.getHandlerClass(),
+							iterator.next());
+			else
 				Compiler.compile("MyClass.java", claz.getHandlerClass(),
-						iterator.next());
-		else
-			Compiler.compile("MyClass.java", claz.getHandlerClass(),
-					ClassLoader.getSystemClassLoader());
+						ClassLoader.getSystemClassLoader());
+		} catch (CompilationException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public ClassEntries getClassEntries() {
