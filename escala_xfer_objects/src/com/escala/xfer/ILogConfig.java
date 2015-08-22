@@ -14,6 +14,14 @@ public interface ILogConfig {
 
 	void setMethodInfo(String methodInfo);
 
+	String getHanderClassName();
+
+	void setHanderClassName(String handlerClassName);
+
+	String getHandlerClassMethodToCall();
+
+	void setHandlerClassMethodToCall(String handlerClassMethodToCall);
+
 	String getHandlerClass();
 
 	void setHandlerClass(String handlerClass);
@@ -21,4 +29,5 @@ public interface ILogConfig {
 	int getStatus();
 
 	void setStatus(int status);
+
 }

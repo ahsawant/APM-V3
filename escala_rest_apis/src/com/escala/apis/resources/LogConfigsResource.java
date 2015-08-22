@@ -140,8 +140,11 @@ public class LogConfigsResource {
 	@POST
 	@Produces(MediaType.TEXT_HTML)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public void newLogConfig(@FormParam("classInfo") String classInfo,
+	public void newLogConfig(
+			@FormParam("classInfo") String classInfo,
 			@FormParam("methodInfo") String methodInfo,
+			@FormParam("handlerClassName") String handlerClassName,
+			@FormParam("handlerClassMethodToCall") String handlerClassMethodToCall,
 			@FormParam("handlerClass") String handlerClass,
 			@Context HttpServletResponse servletResponse) throws IOException {
 
@@ -149,7 +152,7 @@ public class LogConfigsResource {
 		System.out.println("Arguments: " + handlerClass);
 		ILogConfigDAO logConfigDAO = DAOFactory.getInstance().getLogConfigDAO();
 		boolean result = logConfigDAO.addLogConfig(classInfo, methodInfo,
-				handlerClass);
+				handlerClassName, handlerClassMethodToCall, handlerClass);
 		if (result) {
 			System.out.println("Added new entry for class " + classInfo
 					+ " and method " + methodInfo + " with a classHandler.");

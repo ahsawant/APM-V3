@@ -1,20 +1,34 @@
 package com.escala.agent.compiler;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
+import javax.tools.JavaFileObject.Kind;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class CustomClassloaderJavaFileManager implements JavaFileManager {
+
+	// Define a static logger
+	static final Logger logger = LogManager
+			.getLogger(CustomClassloaderJavaFileManager.class.getName());
+
 	private final ClassLoader classLoader;
 	private final StandardJavaFileManager standardFileManager;
 	private final PackageInternalsFinder finder;
+
+	private Map<String, ClassJavaFileObject> newClasses = new HashMap<String, ClassJavaFileObject>();
 
 	public CustomClassloaderJavaFileManager(ClassLoader classLoader,
 			StandardJavaFileManager standardFileManager) {
@@ -25,7 +39,14 @@ public class CustomClassloaderJavaFileManager implements JavaFileManager {
 
 	@Override
 	public ClassLoader getClassLoader(Location location) {
-		return classLoader;
+
+		// Do NOT return the classLoader instance from this class here. This
+		// causes a nasty bug that after the compile task is executed, the
+		// system classloader (because that's the one I passed into this class)
+		// fails to load any new class and throws a NoClassDefFoundException; it
+		// appears that CompilationTask.call() does something to classloaders
+		// that is not part of the public contract...(BUG From what I can tell)
+		return null;
 	}
 
 	@Override
@@ -50,19 +71,11 @@ public class CustomClassloaderJavaFileManager implements JavaFileManager {
 
 	@Override
 	public boolean hasLocation(Location location) {
+		// we don't care about source and other location types - not needed for
+		// compilation
 		return location == StandardLocation.CLASS_PATH
-				|| location == StandardLocation.PLATFORM_CLASS_PATH; // we don't
-																		// care
-																		// about
-																		// source
-																		// and
-																		// other
-																		// location
-																		// types
-																		// - not
-																		// needed
-																		// for
-																		// compilation
+				|| location == StandardLocation.PLATFORM_CLASS_PATH;
+
 	}
 
 	@Override
@@ -75,7 +88,13 @@ public class CustomClassloaderJavaFileManager implements JavaFileManager {
 	public JavaFileObject getJavaFileForOutput(Location location,
 			String className, JavaFileObject.Kind kind, FileObject sibling)
 			throws IOException {
-		throw new UnsupportedOperationException();
+		logger.info(new StringBuffer("Location: ").append(location)
+				.append("; ClassName: ").append(className).append("; Kind: ")
+				.append(kind).append("; Sibbling: ").append(sibling.getName()));
+		ClassJavaFileObject newClass = new ClassJavaFileObject(className,
+				URI.create("class:///" + className + Kind.CLASS.extension));
+		newClasses.put(className, newClass);
+		return (newClass);
 	}
 
 	@Override
@@ -131,6 +150,10 @@ public class CustomClassloaderJavaFileManager implements JavaFileManager {
 	@Override
 	public int isSupportedOption(String option) {
 		return -1;
+	}
+
+	public Map<String, ClassJavaFileObject> generatedClasses() {
+		return (newClasses);
 	}
 
 }

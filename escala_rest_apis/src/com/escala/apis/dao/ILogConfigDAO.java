@@ -25,7 +25,8 @@ public interface ILogConfigDAO {
 
 	public boolean addLogConfig(String className, String methodName);
 
-	boolean addLogConfig(String className, String methodName,
+	public boolean addLogConfig(String className, String methodName,
+			String handlerClassName, String handlerClassMethodToCall,
 			String handlerClass);
 
 	public boolean removeLogConfig(ILogConfig entry);

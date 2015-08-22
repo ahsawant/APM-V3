@@ -1,6 +1,10 @@
 package com.escala.agent.compiler;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.tools.JavaCompiler;
@@ -21,28 +25,29 @@ public class Compiler {
 
 	}
 
-	/*
-	 * Compiles the java class given by className, with source classSource and
-	 * using the classloader cl to resolve dependencies during compile time. The
-	 * /tmp folder will be used as temporary storage on disk.
-	 */
 	public static void compile(String fullyQualifiedClassName,
-			String classSource, ClassLoader cl) throws CompilationException {
+			String classHandlerMethodToCall, String classSource, ClassLoader cl)
+			throws CompilationException {
 
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
 		StandardJavaFileManager standardJavaFileManager = compiler
 				.getStandardFileManager(null, null, null);
-		final JavaFileManager fileManager = new CustomClassloaderJavaFileManager(
+		final CustomClassloaderJavaFileManager fileManager = new CustomClassloaderJavaFileManager(
 				cl, standardJavaFileManager);
 
-		SourceJavaFileObject customFileObj = new SourceJavaFileObject(
+		Set<JavaSourceFromString> classes = new HashSet<JavaSourceFromString>();
+
+		logger.debug("ClassName: " + fullyQualifiedClassName
+				+ "; classSource: " + classSource);
+		JavaSourceFromString customFileObj = new JavaSourceFromString(
 				fullyQualifiedClassName, classSource);
-		Set<SourceJavaFileObject> classes = new HashSet<SourceJavaFileObject>();
+
 		classes.add(customFileObj);
 
 		CompilationTask task = compiler.getTask(null, fileManager, null, null,
 				null, classes);
+
 		boolean result = task.call();
 
 		if (logger.isDebugEnabled())
@@ -50,5 +55,37 @@ public class Compiler {
 					fullyQualifiedClassName).append(
 					result ? " succeeded" : " failed"));
 
+		Map<String, ClassJavaFileObject> generatedClasses = fileManager
+				.generatedClasses();
+
+		try {
+			fileManager.close();
+		} catch (IOException e) {
+			logger.error(e);
+		}
+
+		Class<?> clz;
+		ByteClassLoader cLoader;
+		cLoader = new ByteClassLoader(null, generatedClasses);
+		try {
+			clz = cLoader.loadClass(fullyQualifiedClassName);
+		} catch (ClassNotFoundException e) {
+			throw (new CompilationException(e));
+		}
+
+		try {
+			logger.info("Method being called: " + classHandlerMethodToCall);
+			Method method = clz.getMethod(classHandlerMethodToCall);
+			logger.info("Found method? " + (method != null ? "yes" : "no"));
+			method.invoke(null);
+		} catch (NoSuchMethodException | SecurityException
+				| IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			// e.printStackTrace();
+			logger.error(e);
+			throw new CompilationException(e);
+		}
+
 	}
+
 }

@@ -42,14 +42,13 @@ public class LogClassTransformer implements ClassFileTransformer {
 
 			if (logger.isDebugEnabled())
 				logger.debug("Transforming: " + className);
-			
+
 			// Unclear why null classNames go by
-			if (className == null)
-			{
+			if (className == null) {
 				logger.info("Not transforming class as name is null!");
-				return(classfileBuffer);
+				return (classfileBuffer);
 			}
-			
+
 			trackClassLoaders(loader, className);
 
 			// Only transform classes specified
@@ -71,14 +70,12 @@ public class LogClassTransformer implements ClassFileTransformer {
 
 			byteArray = mccm.getWriter().toByteArray();
 
-			// writeClass(className, byteArray);
-
 		} catch (Throwable t) {
 			logger.error(t);
 		}
 
 		// Write original class
-		// writeClass(className + ".orig", classfileBuffer);
+		writeClass(className + ".orig", classfileBuffer);
 
 		// Write new class
 		// writeClass(className + ".new" , byteArray);
@@ -90,7 +87,7 @@ public class LogClassTransformer implements ClassFileTransformer {
 		synchronized (classLoaders) {
 			if (logger.isDebugEnabled())
 				logger.debug("Found class " + className);
-			
+
 			if (loader == null) {
 				// Using the system class loader as "proxy" in the hopes the
 				// delegation to load later on will yield this class (theory to
@@ -98,7 +95,6 @@ public class LogClassTransformer implements ClassFileTransformer {
 				// by both, but I don't think that happens in practice
 				loader = ClassLoader.getSystemClassLoader();
 			}
-			
 
 			Set<ClassLoader> loaders = classLoaders.get(className);
 			if (loaders == null) {

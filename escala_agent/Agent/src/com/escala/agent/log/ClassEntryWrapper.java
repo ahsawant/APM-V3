@@ -12,7 +12,9 @@ final class ClassEntryWrapper {
 	private final String claz;
 	private boolean changed = true;
 	private final Map<String, Short> methodEntries = new HashMap<String, Short>();
-	private String handlerClass;
+	private String handlerClassSource;
+	private String handlerClassName;
+	private String handerClassMethodToCall;
 
 	// Define a static logger
 	static final Logger logger = LogManager.getLogger(ClassEntryWrapper.class
@@ -31,10 +33,16 @@ final class ClassEntryWrapper {
 	 *            - Current serial number
 	 * @return - whether the method was added (true) or existed (false)
 	 */
-	public boolean addIfNeeded(String method, String handlerClass, Short serial) {
+	public boolean addIfNeeded(String method, String handlerClassName,
+			String handerClassMethodToCall, String handlerClass, Short serial) {
 		Short oldSerial = methodEntries.put(method, serial);
+
+		this.handlerClassName = handlerClassName;
+		this.handerClassMethodToCall = handerClassMethodToCall;
+
 		if (handlerClass != null)
-			this.handlerClass = handlerClass;
+			this.handlerClassSource = handlerClass;
+
 		if (oldSerial == null) {
 			changed = true;
 			return (true);
@@ -85,8 +93,17 @@ final class ClassEntryWrapper {
 			return (methodEntries.containsKey(methodName));
 		}
 
-		public String getHandlerClass() {
-			return (handlerClass);
+		public String getHandlerClassName() {
+			return (handlerClassName);
 		}
+
+		public String getHandlerClassMethodToCall() {
+			return (handerClassMethodToCall);
+		}
+
+		public String getHandlerClassSource() {
+			return (handlerClassSource);
+		}
+
 	}
 }

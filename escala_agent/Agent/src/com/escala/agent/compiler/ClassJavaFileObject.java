@@ -1,22 +1,23 @@
 package com.escala.agent.compiler;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
 import java.net.URI;
 
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
-import javax.tools.JavaFileObject;
+import javax.tools.SimpleJavaFileObject;
 
-class ClassJavaFileObject implements JavaFileObject {
+class ClassJavaFileObject extends SimpleJavaFileObject {
 	private final String binaryName;
 	private final URI uri;
 	private final String name;
+	private ByteArrayOutputStream byteArray;
 
 	public ClassJavaFileObject(String binaryName, URI uri) {
+		super(uri, Kind.CLASS);
 		this.uri = uri;
 		this.binaryName = binaryName;
 		name = uri.getPath() == null ? uri.getSchemeSpecificPart() : uri
@@ -36,7 +37,14 @@ class ClassJavaFileObject implements JavaFileObject {
 
 	@Override
 	public OutputStream openOutputStream() throws IOException {
-		throw new UnsupportedOperationException();
+		byteArray = new ByteArrayOutputStream();
+		return (byteArray);
+	}
+
+	public byte[] getByteArray() {
+		if (byteArray == null)
+			throw (new IllegalStateException());
+		return (byteArray.toByteArray());
 	}
 
 	@Override
@@ -45,42 +53,8 @@ class ClassJavaFileObject implements JavaFileObject {
 	}
 
 	@Override
-	public Reader openReader(boolean ignoreEncodingErrors) throws IOException {
-		throw new UnsupportedOperationException();
-	}
-
-	public CharSequence getCharContent(boolean ignoreEncodingErrors)
-			throws IOException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Writer openWriter() throws IOException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public long getLastModified() {
-		return 0;
-	}
-
-	@Override
 	public boolean delete() {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Kind getKind() {
-		return (Kind.CLASS);
-	}
-
-	@Override
-	// copied from SImpleJavaFileManager
-	public boolean isNameCompatible(String simpleName, Kind kind) {
-		String baseName = simpleName + kind.extension;
-		return kind.equals(getKind())
-				&& (baseName.equals(getName()) || getName().endsWith(
-						"/" + baseName));
 	}
 
 	@Override

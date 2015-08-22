@@ -116,17 +116,18 @@ public class LogConfigDAO implements ILogConfigDAO {
 
 	@Override
 	public boolean addLogConfig(String className, String methodName) {
-		return (addLogConfig(className, methodName, null));
+		return (addLogConfig(className, methodName, null, null, null));
 	}
 
 	@Override
 	public boolean addLogConfig(String className, String methodName,
+			String handlerClassName, String handlerClassMethodToCall,
 			String handlerClass) {
 		boolean result = false;
 		if (className != null && className != "" && methodName != null
 				&& methodName != "") {
 			result = addLogConfig(new LogConfig(className, methodName,
-					handlerClass));
+					handlerClassName, handlerClassMethodToCall, handlerClass));
 		}
 		return result;
 	}

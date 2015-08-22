@@ -13,9 +13,16 @@ import java.util.jar.JarEntry;
 
 import javax.tools.JavaFileObject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 class PackageInternalsFinder {
 	private ClassLoader classLoader;
 	private static final String CLASS_FILE_EXTENSION = ".class";
+
+	// Define a static logger
+	static final Logger logger = LogManager
+			.getLogger(PackageInternalsFinder.class.getName());
 
 	public PackageInternalsFinder(ClassLoader classLoader) {
 		this.classLoader = classLoader;

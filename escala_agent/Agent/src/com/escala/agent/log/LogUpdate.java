@@ -43,8 +43,9 @@ public class LogUpdate {
 			if (entries != null && entries.getLogConfigs() != null) {
 				for (LogConfig entry : entries.getLogConfigs()) {
 					if (classEntries.addIfNeeded(entry.getClassInfo(),
-							entry.getMethodInfo(), entry.getHandlerClass(),
-							serial))
+							entry.getMethodInfo(), entry.getHanderClassName(),
+							entry.getHandlerClassMethodToCall(),
+							entry.getHandlerClass(), serial))
 						logger.error("Found a new log entry for: "
 								+ entry.getClassInfo() + "::"
 								+ entry.getMethodInfo() + "; Status: "
@@ -107,10 +108,13 @@ public class LogUpdate {
 			if (clazLoaders != null)
 				for (Iterator<ClassLoader> iterator = clazLoaders.iterator(); iterator
 						.hasNext();)
-					Compiler.compile("MyClass.java", claz.getHandlerClass(),
-							iterator.next());
+					Compiler.compile(claz.getHandlerClassName(),
+							claz.getHandlerClassMethodToCall(),
+							claz.getHandlerClassSource(), iterator.next());
 			else
-				Compiler.compile("MyClass.java", claz.getHandlerClass(),
+				Compiler.compile(claz.getHandlerClassName(),
+						claz.getHandlerClassMethodToCall(),
+						claz.getHandlerClassSource(),
 						ClassLoader.getSystemClassLoader());
 		} catch (CompilationException e) {
 			e.printStackTrace();
