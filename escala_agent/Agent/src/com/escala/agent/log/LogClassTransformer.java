@@ -36,6 +36,14 @@ public class LogClassTransformer implements ClassFileTransformer {
 			Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
 			byte[] classfileBuffer) throws IllegalClassFormatException {
 
+		// Skip even analyzing classes loaded by the agent classloader (this
+		// will avoid startup deadlocks)
+		if (loader == LogClassTransformer.class.getClassLoader()) {
+			// System.out.println("Classloader not tracked: " + loader
+			// + "; Class: " + className);
+			return (classfileBuffer);
+		}
+
 		byte[] byteArray = classfileBuffer;
 
 		try {
@@ -84,6 +92,7 @@ public class LogClassTransformer implements ClassFileTransformer {
 	}
 
 	private void trackClassLoaders(ClassLoader loader, String className) {
+
 		synchronized (classLoaders) {
 			if (logger.isDebugEnabled())
 				logger.debug("Found class " + className);

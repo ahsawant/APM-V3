@@ -18,15 +18,15 @@ import com.sun.jersey.api.client.WebResource;
 public class CalledMethod implements ICalledMethod {
 
 	// Define a static logger
-	static final Logger logger = LogManager.getLogger(CalledMethod.class
-			.getName());
+	private static final Logger logger = LogManager
+			.getLogger(CalledMethod.class.getName());
 
 	private static ICalledMethod cMethod;
 	private WebResource service;
 
 	public static void statCalledMethod(Object targetObject, String methodName,
 			Object[] args) {
-		System.err.println("Instrumented code called.********************************************************");
+		logger.debug("Instrumented code called.********************************************************");
 		if (cMethod != null)
 			cMethod.calledMethod(targetObject, methodName, args);
 	}
@@ -43,8 +43,7 @@ public class CalledMethod implements ICalledMethod {
 	public void calledMethod(Object targetObject, String methodName,
 			Object[] args) {
 		LogEntry logEntry = null;
-		System.err.println("Instrumented code called.********************************************************");
-
+		logger.debug("Instrumented code called.********************************************************");
 
 		// String baseLogStatement = CalledMethodProxy.getDebugString(
 		// targetObject, methodName, args);
@@ -52,8 +51,8 @@ public class CalledMethod implements ICalledMethod {
 		LogEntries entries = new LogEntries();
 		logEntry = new LogEntry(getOutput(targetObject, methodName, args));
 		entries.getLogEntries().add(logEntry);
-		
-		System.err.println("Method called *****************************************************************");
+
+		logger.debug("Method called *****************************************************************");
 
 		ClientResponse response = service.path("logentries")
 				.accept(MediaType.APPLICATION_JSON)
